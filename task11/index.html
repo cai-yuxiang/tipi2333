@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="black" name="apple-mobile-web-app-status-bar-style">
+    <meta content="telephone=no" name="format-detection">
+    <script>
+        window.mobileUtil = (function(win, doc) {
+            var UA = navigator.userAgent,
+                    isAndroid = /android|adr/gi.test(UA),
+                    isIos = /iphone|ipod|ipad/gi.test(UA) && !isAndroid, 
+                    isMobile = isAndroid || isIos;  
+            return {
+                isAndroid: isAndroid,
+                isIos: isIos,
+                isMobile: isMobile,
+                isNewsApp: /NewsApp\/[\d\.]+/gi.test(UA),
+                isWeixin: /MicroMessenger/gi.test(UA),
+                isQQ: /QQ\/\d/gi.test(UA),
+                isYixin: /YiXin/gi.test(UA),
+                isWeibo: /Weibo/gi.test(UA),
+                isTXWeibo: /T(?:X|encent)MicroBlog/gi.test(UA),
+                tapEvent: isMobile ? 'tap' : 'click',
+                
+                fixScreen: function() {
+                    var metaEl = doc.querySelector('meta[name="viewport"]'),
+                            metaCtt = metaEl ? metaEl.content : '',
+                            matchScale = metaCtt.match(/initial\-scale=([\d\.]+)/),
+                            matchWidth = metaCtt.match(/width=([^,\s]+)/);
+                    if ( !metaEl ) { 
+                        var docEl = doc.documentElement,
+                                maxwidth = docEl.dataset.mw || 750, 
+                                dpr = isIos ? Math.min(win.devicePixelRatio, 3) : 1,
+                                scale = 1 / dpr,
+                                tid;
+                        docEl.removeAttribute('data-mw');
+                        docEl.dataset.dpr = dpr;
+                        metaEl = doc.createElement('meta');
+                        metaEl.name = 'viewport';
+                        metaEl.content = fillScale(scale);
+                        docEl.firstElementChild.appendChild(metaEl);
+                        var refreshRem = function() {
+                            var width = docEl.getBoundingClientRect().width;
+                            if (width / dpr > maxwidth) {
+                                width = maxwidth * dpr;
+                            }
+                            var rem = width / 32;
+                            docEl.style.fontSize = rem + 'px';
+                        };
+                        win.addEventListener('resize', function() {
+                            clearTimeout(tid);
+                            tid = setTimeout(refreshRem, 300);
+                        }, false);
+                        win.addEventListener('pageshow', function(e) {
+                            if (e.persisted) {
+                                clearTimeout(tid);
+                                tid = setTimeout(refreshRem, 300);
+                            }
+                        }, false);
+                        refreshRem();
+                    } else if ( isMobile && !matchScale && ( matchWidth && matchWidth[1] != 'device-width' ) ) { 
+                        var	width = parseInt(matchWidth[1]),
+                                iw = win.innerWidth || width,
+                                ow = win.outerWidth || iw,
+                                sw = win.screen.width || iw,
+                                saw = win.screen.availWidth || iw,
+                                ih = win.innerHeight || width,
+                                oh = win.outerHeight || ih,
+                                ish = win.screen.height || ih,
+                                sah = win.screen.availHeight || ih,
+                                w = Math.min(iw,ow,sw,saw,ih,oh,ish,sah),
+                                scale = w / width;
+                        if ( scale < 1 ) {
+                            metaEl.content = metaCtt + ',' + fillScale(scale);
+                        }
+                    }
+                    function fillScale(scale) {
+                        return 'initial-scale=' + scale + ',maximum-scale=' + scale + ',minimum-scale=' + scale;
+                    }
+                }
+            };
+        })(window, document);
+        mobileUtil.fixScreen();
+    </script>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <!--头部-->
+    <header>
+        <a><img src="#">返回</a>
+        <h1>这是标题</h1>
+    </header>
+    <!--nav-->
+    <section id="navbar">
+        <ul class="nav-top">
+            <li>导航</li>
+            <li class="nav-active">导航</li>
+            <li>导航</li>
+            <li>导航</li>
+            <li>导航</li>
+        </ul>
+        <!--pic-->
+        <div class="nav-pic"></div>
+        <ul class="nav-mid">
+            <li><div class="nav-mid-img"></div>标签</li>
+            <li><div class="nav-mid-img"></div>标签</li>
+            <li><div class="nav-mid-img"></div>标签</li>
+            <li><div class="nav-mid-img"></div>标签</li>
+            <li><div class="nav-mid-img"></div>标签</li>
+        </ul>
+        <ul class="nav-vertical">
+            <li>
+                <div class="nav-bottom-img"></div>
+                <h2>分栏一</h2>
+                <h3>分栏小标题</h3>
+            </li>
+            <li>
+                <div class="nav-bottom-img"></div>
+                <h2>分栏一</h2>
+                <h3>分栏小标题</h3>
+            </li>
+            <li>
+                <div class="nav-bottom-img"></div>
+                <h2>分栏一</h2>
+                <h3>分栏小标题</h3>
+            </li>
+        </ul>
+    </section>
+    <!--模块一-->
+    <section class="module1">
+        <div class="title"><h2>模块一</h2></div>
+        <div class="modu-wrap">
+            <div class="modu-img fl"></div>
+            <div class="modu-content fl">
+                <div class="modu-vertical fl">
+                    <h3>这是文案</h3>
+                    <h3>这是文案</h3>
+                </div>
+                <div class="modu-vertical fl">
+                    <h3>这是文案</h3>
+                    <h3>这是文案</h3>
+                </div>
+            </div>
+        </div>
+        <div class="modu-wrap">
+            <div class="modu-img fl"></div>
+            <div class="modu-content fl">
+                <div class="modu-vertical fl">
+                    <h3>这是文案</h3>
+                    <h3>这是文案</h3>
+                </div>
+                <div class="modu-vertical fl">
+                    <h3>这是文案</h3>
+                    <h3>这是文案</h3>
+                </div>
+            </div>
+        </div>
+
+    </section>
+    <!--模块二-->
+    <section class="module1">
+        <div class="title"><h2>模块二</h2></div>
+        <div class="modu-wrap">
+            <div class="modu-img fl"></div>
+            <div class="modu-content fl">
+                <div class="modu-vertical fl">
+                    <h3>这是文案</h3>
+                    <h3>这是文案</h3>
+                </div>
+                <div class="modu-vertical fl">
+                    <h3>这是文案</h3>
+                    <h3>这是文案</h3>
+                </div>
+            </div>
+        </div>
+        <div class="modu-wrap">
+            <div class="modu-img fl"></div>
+            <div class="modu-content fl">
+                <div class="modu-vertical fl">
+                    <h3>这是文案</h3>
+                    <h3>这是文案</h3>
+                </div>
+                <div class="modu-vertical fl">
+                    <h3>这是文案</h3>
+                    <h3>这是文案</h3>
+                </div>
+            </div>
+        </div>
+
+    </section>
+    <!--模块三-->
+    <section class="module1" id="m-bottom">
+        <div class="modu-wrap">
+            <div class="modu-img fl"></div>
+            <div class="modu-content fl">
+                <h3>这是文章标题字号是22的文章标题</h3>
+                <h4>文章来源 6分钟前</h4>
+            </div>
+        </div>
+        <div class="modu-wrap">
+            <div class="modu-img fl"></div>
+            <div class="modu-content fl">
+                <h3>这是文章标题字号是22的文章标题</h3>
+                <h4>文章来源 6分钟前</h4>
+            </div>
+        </div>
+        <div class="modu-wrap" id="last-con">
+            <div class="modu-content">
+                <h3>这是文章标题字号是22的文章标题</h3>
+                <div class="modu-img fl"></div>
+                <div class="modu-img fl"></div>
+                <div class="modu-img fl"></div>
+                <h4 class="fl">文章来源 6分钟前</h4>
+            </div>
+        </div>
+    </section>
+    <footer></footer>
+
+</body>
+</html>
